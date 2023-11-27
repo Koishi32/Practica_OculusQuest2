@@ -14,7 +14,7 @@ public class Timer : MonoBehaviour
         Time.timeScale = 1;
         LoseScreen.SetActive(false);
 #if UNITY_EDITOR
-        timeRemaining = 30;
+        //timeRemaining = 30;
 #endif
         // Starts the timer automatically
         timerIsRunning = true;
