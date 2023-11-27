@@ -10,10 +10,14 @@ public class DrunkBehaviour : MonoBehaviour
     Vector3 Destination;
     float lastVel;
     public int vida;
+    bool CnaHarmPlayer;
+    life referencePlayer;
     // Start is called before the first frame update
     void Start()
     {
-        
+        CnaHarmPlayer = true;
+        Player = GameObject.FindGameObjectWithTag("Objective").transform;
+        referencePlayer = Player.GetComponentInChildren<life>();
         Animator = this.gameObject.GetComponent<Animator>();
         myNavMeshAgent = GetComponent<NavMeshAgent>();
         Animator.SetBool("IsRuning", true);
@@ -33,11 +37,14 @@ public class DrunkBehaviour : MonoBehaviour
         }
         if (vida < 1) {
             Animator.SetTrigger("Death");
+            CnaHarmPlayer = false;
+            
             myNavMeshAgent.speed = 0;
         }
     }
 
     public void Death_Drunk() {
+        life.EnemiesKilled++;
         Destroy(this.gameObject);
     }
     // Update is called once per frame
@@ -46,8 +53,12 @@ public class DrunkBehaviour : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            //isTouchingPlayer = true;
             Debug.Log("PlayerHit");
             Animator.SetTrigger("Punch");
+            if (CnaHarmPlayer)
+                referencePlayer.takeDamage();
+            //other.GetComponent<life>().takeDamage();
             // Animator.SetBool("IsRuning", false);
         }
     }
@@ -56,6 +67,7 @@ public class DrunkBehaviour : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             Animator.ResetTrigger("Punch");
+            //isTouchingPlayer = false;
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -63,9 +75,13 @@ public class DrunkBehaviour : MonoBehaviour
         //Debug.Log(other.gameObject.name);
         if (other.gameObject.tag == "Player")
         {
+            //isTouchingPlayer = true;
             Debug.Log("PlayerHit");
             Animator.SetTrigger("Punch");
-           // Animator.SetBool("IsRuning", false);
+            if (CnaHarmPlayer)
+                referencePlayer.takeDamage();
+            //other.GetComponent<life>().takeDamage();
+            // Animator.SetBool("IsRuning", false);
         }
         
         else if (other.tag == "Projectile")
