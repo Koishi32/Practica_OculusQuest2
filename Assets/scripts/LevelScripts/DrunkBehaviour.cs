@@ -15,6 +15,7 @@ public class DrunkBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         CnaHarmPlayer = true;
         Player = GameObject.FindGameObjectWithTag("Objective").transform;
         referencePlayer = Player.GetComponentInChildren<life>();
@@ -25,6 +26,7 @@ public class DrunkBehaviour : MonoBehaviour
         Destination = myNavMeshAgent.destination;
         lastVel = myNavMeshAgent.speed;
         vida = 5;
+        myNavMeshAgent.stoppingDistance = 1.5f;
     }
 
     private void Update()

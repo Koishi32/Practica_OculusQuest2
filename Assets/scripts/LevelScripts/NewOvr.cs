@@ -10,14 +10,21 @@ public class NewOvr : MonoBehaviour
     public float userSpeed;
     private Transform cameraTranform;
 
+    public AudioSource audio;
     //for user interactions
     public Transform bulletStart;
     public GameObject bullet;
     public float bulletForce;
 
+    float shotTimePassed;
+    float ShotLimit;
+    bool canShit;
     // Start is called before the first frame update
     void Start()
     {
+        shotTimePassed = 0.0f;
+        ShotLimit = 0.2f;
+        canShit = true;
         userCharacter = GetComponent<CharacterController>();
         cameraTranform = Camera.main.transform;
     }
@@ -30,7 +37,7 @@ public class NewOvr : MonoBehaviour
         float cameraRotation = cameraTranform.eulerAngles.y;
         Vector3 camerarotation = Quaternion.Euler(new Vector3(0, 90, 0)) * cameraTranform.forward;
         userDirection = (camerarotation * Input.GetAxis("Horizontal") + cameraTranform.forward * Input.GetAxis("Vertical")).normalized;
-        //userDirection.y = 0f;
+        userDirection.y = 0f;
         userCharacter.Move(userDirection * Time.deltaTime * userSpeed);
 
         //for user interactions
@@ -39,9 +46,30 @@ public class NewOvr : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1") || triggerOculusValue >= 0.5f)
         {
-            GameObject newBullet = Instantiate(bullet, bulletStart.transform.position, bulletStart.rotation);
-            Rigidbody bulletforce = newBullet.GetComponent<Rigidbody>();
-            bulletforce.AddForce(bulletStart.forward * Time.deltaTime * bulletForce, ForceMode.Impulse);
+            if (canShit)
+            {
+                canShit = false;
+                audio.Play();
+                GameObject newBullet = Instantiate(bullet, bulletStart.transform.position, bulletStart.rotation);
+                Rigidbody bulletforce = newBullet.GetComponent<Rigidbody>();
+                bulletforce.AddForce(bulletStart.forward * Time.deltaTime * bulletForce, ForceMode.Impulse);
+            }
+            else {
+                
+            
+            }
+            
+            
+        }
+        if (!canShit)
+        {
+            shotTimePassed += Time.deltaTime;
+            if (shotTimePassed > ShotLimit)
+            {
+                canShit = true;
+                shotTimePassed = 0.0f;
+            }
+
         }
 
 
